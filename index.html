@@ -7,12 +7,24 @@
 <meta name="viewport" content="width=device-width">
 <style>
   html {
-    font: sans-serif;
-    font-size: 16pt;
+    font-family: sans-serif;
+    font-size: 12pt;
   }
 
   input {
     font: inherit;
+  }
+
+  ul {
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+  }
+
+  li {
+    margin: 0;
+    padding: 0;
+    border-bottom: 1px solid #999;
   }
 </style>
 
@@ -21,7 +33,43 @@
 
   <h1>composition test app</h1>
 
-  <input type="text">
+  <input id="input" type="text" autofocus>
+  <ul id="results"></ul>
+
+  <script>
+    function logEvent (event) {
+      var li = document.createElement('li')
+
+      var eventEl = document.createElement('pre')
+      var json = JSON.stringify({
+        type: event.type,
+        nodeName: event.target.nodeName,
+        keyCode: event.keyCode,
+        which: event.which,
+        timeStamp: event.timeStamp
+      }, null, 2)
+
+      eventEl.innerHTML = json.split('\n').slice(1, -1).join('\n')
+
+      li.appendChild(eventEl)
+
+      if (results.children.length) {
+        results.insertBefore(li, results.children[0])
+      } else {
+        results.appendChild(li)
+      }
+    }
+
+    ;[
+      'keyup',
+      'input',
+      'compositionstart',
+      'compositionupdate',
+      'compositionend'
+    ].forEach(function (eventType) {
+      input.addEventListener(eventType, logEvent)
+    })
+  </script>
 
 </body>
 </html>
